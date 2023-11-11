@@ -1,0 +1,28 @@
+{% extends  "base.html" %}
+{% block home %}
+
+    <!-- Home Page -->
+    <div class="container-fluid p-0">
+        <section class="row align-items-center justify-content-start text-left text-white filter bg-dark min-vh-100"
+            style="background: url('/web_app/static/gym.png') center no-repeat; background-size: cover;">
+            <div class="container content">
+                <div class="col-lg-6">
+                    <h1 class="display-4 ms-3" style="font-weight: bold">THE SCMS SALE</h1>
+                    <a href="/signup" class="btn btn-light btn-lg ms-3">Join Now</a>
+                </div>
+            </div>
+        </section>
+        <section class="row align-items-center justify-content-start text-left filter bg-light min-vh-100"
+            style="background: url('/web_app/static/swimming-pool.png') center no-repeat; background-size: cover;">
+            <div class="container content">
+                <div class="col-lg-6 bg-white p-4">
+                    <h2>Membership Benefits:</h2>
+                    <p>After becoming our member, not only can you book sessions for free at any time,
+                    you can also enjoy our massage chairs and resupply station for free</p>
+                    <a href="/membership" class="btn btn-dark btn-lg">Become a member</a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+{% endblock %}

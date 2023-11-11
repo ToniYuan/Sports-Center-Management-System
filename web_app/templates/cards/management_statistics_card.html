@@ -1,0 +1,155 @@
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+    google.charts.load('current', {'packages': ['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+        const test_data = [['Activities', 'Number of activities booked']]
+        {% for booking in bookings %}
+        test_data.push(['{{ booking.activity_name}}', {{ booking.counts }}])
+        {% endfor %}
+        var data = google.visualization.arrayToDataTable(test_data);
+        var options = {title: 'Numbers of Activities booked'};
+        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+        chart.draw(data, options);
+    }
+</script>
+<script type="text/javascript">
+    google.charts.load("current", {packages: ["corechart"]});
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+        const test_data = [['Task', 'Hours per Day']]
+        {% for fac in facilities_stats %}
+        test_data.push(['{{ fac.facility_name}}', {{ fac.counts }}])
+        {% endfor %}
+        var data = google.visualization.arrayToDataTable(test_data);
+        var options = {
+            title: 'Activities booked per Facility',
+            pieHole: 0.4,
+        };
+        var chart = new google.visualization.PieChart(document.getElementById('donutchart'));
+        chart.draw(data, options);
+    }
+</script>
+
+<!-- Statistics page -->
+<h5>Statistics</h5>
+
+<!-- Charts-->
+<div style="display: flex; justify-content: space-around">
+    <div id="piechart"></div>
+    <div id="donutchart"></div>
+</div>
+
+<!-- Revenue table -->
+<table class=table>
+    <thead>
+    <tr>
+        <th>Total Revenue</th>
+        <th>Numbers of session booked</th>
+        <th>Most booked activities : (total)</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td><b>£</b> {% for rev in total_rev %} {{ rev.revenue }} {% endfor %}</td>
+        <td> {% for total in total_booked %} {{ total.counts }} {% endfor %}</td>
+        <td> {% for top in most_booked %} {{ top.activity_name }} : <b> {{top.counts}} </b> {% endfor %}</td>
+    </tr>
+    </tbody>
+
+</table>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Activity name</th>
+        <th>Numbers of session booked</th>
+        <th>Price</th>
+        <th>total</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for booking in bookings %}
+    <tr>
+        <td>{{ booking.activity_name }}</td>
+        <td>{{ booking.counts}}</td>
+        <td><b>£</b> {{ booking.price}}</td>
+        <td><b>£</b> {{ booking.revenue }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<div style="display: flex; justify-content: space-around">
+</div>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Facility name</th>
+        <th>Numbers of session booked</th>
+        <th>Total</th>
+
+    </tr>
+    </thead>
+    <tbody>
+    {% for fac_stats in facilities_stats %}
+    <tr>
+        <td>{{ fac_stats.facility_name }}</td>
+        <td>{{ fac_stats.counts}}</td>
+        <td>{{ fac_stats.revenue}}</td>
+
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<table class="table">
+    <tr>
+        <th>Total number of customers</th>
+        <th>Total number of members</th>
+    </tr>
+
+    {% for cus in total_cus %}
+    <td>{{ cus.total}}</td>
+    {% endfor %}
+
+    {% for rev in total_mem %}
+    <td>{{ rev.total}}</td>
+    {% endfor %}
+
+
+</table>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Membership type</th>
+        <th>Numbers of current customers</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for member in members %}
+    <tr>
+
+        {% if member.membership_type == 0 %}
+        <td>No membership</td>
+        {% elif member.membership_type == 1%}
+        <td>Monthly</td>
+        {% elif member.membership_type == 2 %}
+        <td>Annually</td>
+        {% else %}
+        <td>No membership</td>
+        {% endif %}
+
+        <td>{{ member.counts}}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+
+
+

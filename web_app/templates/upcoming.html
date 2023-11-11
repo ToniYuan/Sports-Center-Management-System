@@ -1,0 +1,33 @@
+{% extends  "base.html" %}
+{% block content %}
+
+<h4 class="fst-italic bold mb-3">Our facilities</h4>
+<table class="table table-hover table-bordered table-striped">
+    <tr>
+        <th>Facilities</th>
+        <th>Capacity </th>
+        <th>Opening time</th>
+        <th>Closing time</th>
+
+    </tr>
+
+    {% for row in activities %}
+    <tr>
+        <td>
+            {{ row.facility_name }}
+        </td>
+        <td>
+            {{ row.capacity }}
+        </td>
+        <td>
+            {{ row.opening_time }}
+        </td>
+           <td>
+            {{ row.closing_time }}
+        </td>
+    </tr>
+    {% endfor %}
+
+
+</table>
+{% endblock %}

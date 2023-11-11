@@ -1,0 +1,31 @@
+{% extends  "base.html" %}
+{% block content %}
+<h4 class="fst-italic bold mb-3">My account</h4>
+<h5> Membership status: {{ sub_type }}</h5>
+{% if sub_type != "No Membership" %}
+<form method="POST">
+    <button class="btn btn-danger" type="submit" name="cancel">Cancel Membership</button>
+</form>
+{% endif %}
+<h5 class="mt-3"> Upcoming Bookings:</h5>
+{% for booking in user_bookings %}
+<div class="row">
+    <div class="col-6">
+        <p>{{ booking[0] }} | {{ booking[1] }}
+        <p>
+    </div>
+    <div class="col-6">
+        <form method="POST">
+            <button class="btn btn-danger btn-sm" type="submit" name="cancel-booking-{{ booking[2] }}">Cancel Booking
+            </button>
+        </form>
+    </div>
+</div>
+{% endfor %}
+<h5 class="mt-3"> Previous Bookings:</h5>
+{% for booking in outdated_bookings %}
+<div>
+    <h3>{{ booking[0] }} | {{ booking[1] }}</h3>
+</div>
+{% endfor %}
+{% endblock %}

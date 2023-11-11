@@ -1,0 +1,61 @@
+<!-- Current sessions list -->
+<h5>Current sessions</h5>
+<table class=table>
+    <thead>
+    <tr>
+        <th>Activity name</th>
+        <th>Start date + time</th>
+        <th>Space Left</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for sesh in s%}
+    <tr>
+        <td>{{ sesh[0] }}</td>
+        <td>{{ sesh[1].start_date }}</td>
+        <td>{{ sesh[1].space_left }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+
+<!-- Add session form -->
+<h5>Add session</h5>
+<form id="management-sessions-form" method="POST" action="/amend-sessions">
+    {{ management_sessions_form.csrf_token }}
+    <div class="row">
+        <!-- Activity name -->
+        <div class="col-6">
+            {{ management_sessions_form.activity_id.label }}
+            <div class="input-group mb-2">
+                {{ management_sessions_form.activity_id(class="form-control") }}
+            </div>
+        </div>
+        <!-- Start Date -->
+        <div class="col-6">
+            {{ management_sessions_form.start_date.label }}
+            <div class="input-group mb-2">
+                {{ management_sessions_form.start_date(class="form-control") }}
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <!-- Start Time -->
+        <div class="col-6">
+            {{ management_sessions_form.start_time.label }}
+            <div class="input-group mb-2">
+                {{ management_sessions_form.start_time(class="form-control") }}
+            </div>
+        </div>
+        <!-- Space Left -->
+        <div class="col-6">
+            {{ management_sessions_form.space_left.label }}
+            <div class="input-group mb-2">
+                {{ management_sessions_form.space_left(class="form-control") }}
+            </div>
+        </div>
+    </div>
+    <!-- Submit button -->
+    <button type="submit" class="btn btn-danger btn-block mt-3">Add session</button>
+</form>

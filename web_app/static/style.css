@@ -1,0 +1,26 @@
+body {
+    /* royalty free image from: https://unsplash.com/photos/MsCgmHuirDo?utm_source=unsplash&utm_medium=referral&utm_content=creditShareLink */
+    background-image: url("/web_app/static/background.jpg");
+}
+
+.card {
+  background-color: #f8f9fa;
+}
+
+.nav-link {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.navbar-brand {
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.tab-link {
+    color: black;
+}
+
+.bold {
+    font-weight: bold;
+}

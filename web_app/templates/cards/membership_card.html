@@ -1,0 +1,11 @@
+<!-- membership form -->
+<form id="membership-form" method="POST" action="/membership">
+    {{ membership_form.csrf_token }}
+    <!-- Activity -->
+    {{ membership_form.membership.label }}
+    <div class="input-group mb-2">
+        {{ membership_form.membership(class="form-control") }}
+    </div>
+    <!-- Submit button -->
+    <button type="submit" class="btn btn-danger btn-block mt-3">Become A Member</button>
+</form>

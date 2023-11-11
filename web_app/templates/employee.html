@@ -1,0 +1,25 @@
+{% extends  "base.html" %}
+{% block content %}
+
+<h4 class="fst-italic bold mb-2">Amend customer bookings</h4>
+
+<form id="employee-view-bookings-form" method="POST" action="/employee">
+    {{ employee_view_bookings_form.csrf_token }}
+    {{ employee_view_bookings_form.user_id.label }}
+    <div class="row">
+        <div class="col-6">
+            <!-- Select customer to view bookings -->
+            <div class="input-group mb-2">
+                {{ employee_view_bookings_form.user_id(class="form-control") }}
+            </div>
+        </div>
+        <div class="col-6">
+            <!-- Submit button -->
+            <button type="submit" class="btn btn-danger btn-block">
+                {{ employee_view_bookings_form.submit.label }}
+            </button>
+        </div>
+    </div>
+</form>
+
+{% endblock %}

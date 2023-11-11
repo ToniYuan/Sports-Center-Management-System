@@ -1,0 +1,27 @@
+{% extends  "base.html" %}
+{% block content %}
+
+{% include "/cards/booking_card.html" %}
+
+{% if basket %}
+<h4 class="fst-italic bold mt-2">Sessions in basket</h4>
+{% endif %}
+
+{% for activity in basket %}
+<div>
+    <p>{{ activity[0] }} | {{ activity[1] }}</p>
+</div>
+{% endfor %}
+
+{% if basket %}
+<form method="POST">
+    <button type="submit" class="btn btn-secondary" name="clear-basket">Clear Basket</button>
+</form>
+{% endif %}
+
+{% if basket %}
+<form method="POST">
+    <button type="submit" class="btn btn-danger mt-2" name="checkout">Checkout Basket</button>
+</form>
+{% endif %}
+{% endblock %}

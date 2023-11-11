@@ -1,0 +1,64 @@
+<!-- Current facilities list -->
+<h5>Current facilities</h5>
+<table class=table>
+    <thead>
+    <tr>
+        <th>Facility name</th>
+        <th>Capacity</th>
+        <th>Opening time</th>
+        <th>Closing time</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for facility in facilities %}
+    <tr>
+        <td>{{ facility.facility_name }}</td>
+        <td>{{ facility.capacity }}</td>
+        <td>{{ facility.opening_time }}</td>
+        <td>{{ facility.closing_time }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+
+<!-- Add facility form -->
+<h5>Add facility</h5>
+<form id="management-facilities-form" method="POST" action="/amend-facilities">
+    {{ management_facilities_form.csrf_token }}
+    <div class="row">
+        <!-- Facility name -->
+        <div class="col-6">
+            {{ management_facilities_form.facility_name.label }}
+            <div class="input-group mb-2">
+                {{ management_facilities_form.facility_name(class="form-control") }}
+            </div>
+        </div>
+        <div class="col-6">
+            <!-- Capacity -->
+            {{ management_facilities_form.capacity.label }}
+            <div class="input-group mb-2">
+                {{ management_facilities_form.capacity(class="form-control") }}
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <!-- Opening time -->
+        <div class="col-6">
+            {{ management_facilities_form.opening_time.label }}
+            <div class="input-group mb-2">
+                {{ management_facilities_form.opening_time(class="form-control") }}
+            </div>
+        </div>
+        <div class="col-6">
+            <!-- Closing time -->
+            {{ management_facilities_form.closing_time.label }}
+            <div class="input-group mb-2">
+                {{ management_facilities_form.closing_time(class="form-control") }}
+            </div>
+        </div>
+    </div>
+
+    <!-- Submit button -->
+    <button type="submit" class="btn btn-danger btn-block mt-3">Add facility</button>
+</form>

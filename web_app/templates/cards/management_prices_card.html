@@ -1,0 +1,32 @@
+<!-- Amend prices form -->
+<form id="managment-prices-form" method="POST" action="/amend-prices">
+    {{ management_prices_form.csrf_token }}
+
+    <h5>Amend membership prices</h5>
+
+    <!-- Monthly price form -->
+    {{ management_prices_form.monthly_price.label }}
+    <div class="input-group mb-2">
+        {{ management_prices_form.monthly_price(class="form-control", value=monthly_membership_price,
+        placeholder=monthly_membership_price) }}
+    </div>
+
+    <!-- Annual price field -->
+    {{ management_prices_form.annual_price.label }}
+    <div class="input-group mb-2">
+        {{ management_prices_form.annual_price(class="form-control", value=annual_membership_price,
+        placeholder=annual_membership_price) }}
+    </div>
+
+    <h5 class="mt-4">Amend booking prices</h5>
+
+    <!-- Discount field -->
+    {{ management_prices_form.discount.label }}
+    <div class="input-group mb-2">
+        {{ management_prices_form.discount(class="form-control", value=discount, placeholder=discount) }}
+    </div>
+
+    <!-- Submit button -->
+    <button type="submit" class="btn btn-danger btn-block mt-3">{{ management_prices_form.submit.label }}
+    </button>
+</form>

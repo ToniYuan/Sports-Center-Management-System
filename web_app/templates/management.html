@@ -1,0 +1,82 @@
+{% extends  "base.html" %}
+{% block content %}
+
+<!-- Tabs selector -->
+<ul class="nav nav-tabs" id="management-tabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link tab-link active" id="management-prices-tab" data-bs-toggle="tab"
+                data-bs-target="#management-prices-panel" type="button" role="tab">Amend prices & discount
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link tab-link" id="management-facilities-tab" data-bs-toggle="tab"
+                data-bs-target="#management-facilities-panel" type="button" role="tab">Amend facilities
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link tab-link" id="management-activities-tab" data-bs-toggle="tab"
+                data-bs-target="#management-activities-panel" type="button" role="tab">Amend activities
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link tab-link" id="management-sessions-tab" data-bs-toggle="tab"
+                data-bs-target="#management-sessions-panel" type="button" role="tab">Amend sessions
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link tab-link" id="management-staff-tab" data-bs-toggle="tab"
+                data-bs-target="#management-staff-panel" type="button" role="tab">Manage staff
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link tab-link" id="management-stats-tab" data-bs-toggle="tab"
+                data-bs-target="#management-stats-panel" type="button" role="tab">View statistics
+        </button>
+    </li>
+</ul>
+
+<!-- Tabs content -->
+<div class="tab-content mt-3" id="management-tabs-panel">
+    <div class="tab-pane fade show active" id="management-prices-panel" role="tabpanel">
+        {% include "/cards/management_prices_card.html" %}
+    </div>
+    <div class="tab-pane fade" id="management-facilities-panel" role="tabpanel">
+        {% include "/cards/management_facilities_card.html" %}
+    </div>
+    <div class="tab-pane fade" id="management-activities-panel" role="tabpanel">
+        {% include "/cards/management_activities_card.html" %}
+    </div>
+    <div class="tab-pane fade" id="management-sessions-panel" role="tabpanel">
+        {% include "/cards/management_sessions_card.html"%}
+    </div>
+    <div class="tab-pane fade" id="management-staff-panel" role="tabpanel">
+        {% include "/cards/management_staff_card.html" %}
+    </div>
+    <div class="tab-pane fade" id="management-stats-panel" role="tabpanel">
+        {% include "/cards/management_statistics_card.html"%}
+    </div>
+</div>
+
+<!-- Modified bootstrap tab activation script -->
+<script>
+    // Activate the tabs
+    let navTabs = document.querySelectorAll('.tab-link');
+    let tabPanes = document.querySelectorAll('.tab-pane');
+
+    navTabs.forEach(function (tab) {
+        tab.addEventListener('click', function (event) {
+            event.preventDefault();
+            let target = document.querySelector(event.target.getAttribute('data-bs-target'))
+            tabPanes.forEach(function (tabPane) {
+                tabPane.classList.remove('show', 'active');
+            });
+            target.classList.add('show', 'active');
+            navTabs.forEach(function (navTab) {
+                navTab.classList.remove('active');
+            });
+            tab.classList.add('active');
+        });
+    });
+</script>
+
+{% endblock %}

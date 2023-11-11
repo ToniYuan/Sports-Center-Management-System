@@ -1,0 +1,59 @@
+{% extends  "base.html" %}
+{% block content %}
+<h4 class="fst-italic bold mb-3">Please fill out the form below to sign up</h4>
+    <!-- Signup form -->
+    <form id="signup-form" method="POST" action="/signup">
+        {{ signup_form.csrf_token }}
+
+        <!-- First name -->
+        {{ signup_form.name_first.label }}
+        <div class="input-group mb-2">
+            {{ signup_form.name_first(class="form-control", placeholder="Enter first name:") }}
+        </div>
+
+        <!-- Last name -->
+        {{ signup_form.name_last.label }}
+        <div class="input-group mb-2">
+            {{ signup_form.name_last(class="form-control", placeholder="Enter last name:") }}
+        </div>
+
+        <!-- Address line 1 -->
+        {{ signup_form.line_1.label }}
+        <div class="input-group mb-2">
+            {{ signup_form.line_1(class="form-control", placeholder="Enter 1st line of address:") }}
+        </div>
+
+        <!-- Address line 2 -->
+        {{ signup_form.line_2.label }}
+        <div class="input-group mb-2">
+            {{ signup_form.line_2(class="form-control", placeholder="Enter 2nd line of address:") }}
+        </div>
+
+        <!-- Address city -->
+        {{ signup_form.city.label }}
+        <div class="input-group mb-2">
+            {{ signup_form.city(class="form-control", placeholder="Enter city:") }}
+        </div>
+
+        <!-- Address postcode -->
+        {{ signup_form.postcode.label }}
+        <div class="input-group mb-2">
+            {{ signup_form.postcode(class="form-control", placeholder="Enter postcode:") }}
+        </div>
+
+        <!-- Email -->
+        {{ signup_form.email.label }}
+        <div class="input-group mb-2">
+            {{ signup_form.email(class="form-control", placeholder="Enter email:") }}
+        </div>
+
+        <!-- Password -->
+        {{ signup_form.password.label }}
+        <div class="input-group mb-2">
+            {{ signup_form.password(class="form-control", placeholder="Enter password:") }}
+        </div>
+
+        <!-- Submit button -->
+        <button type="submit" class="btn btn-danger btn-block mt-3">Sign up</button>
+    </form>
+    {% endblock %}

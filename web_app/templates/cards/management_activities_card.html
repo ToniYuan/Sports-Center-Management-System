@@ -1,0 +1,63 @@
+<!-- Current activities list -->
+<h5>Current activities</h5>
+<table class=table>
+    <thead>
+    <tr>
+        <th>Activity name</th>
+        <th>Facility</th>
+        <th>Duration (hrs)</th>
+        <th>Price (£)</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for activity in activities %}
+    <tr>
+        <td>{{ activity.activity_name }}</td>
+        <td>{{ activity.facility_name }}</td>
+        <td>{{ activity.duration }}</td>
+        <td>{{ activity.price }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+
+<!-- Add activity form -->
+<h5>Add activity</h5>
+<form id="management-activities-form" method="POST" action="/amend-activities">
+    {{ management_activities_form.csrf_token }}
+    <div class="row">
+        <!-- Activity name -->
+        <div class="col-6">
+            {{ management_activities_form.activity_name.label }}
+            <div class="input-group mb-2">
+                {{ management_activities_form.activity_name(class="form-control") }}
+            </div>
+        </div>
+        <div class="col-6">
+            <!-- Duration -->
+            {{ management_activities_form.duration.label }}
+            <div class="input-group mb-2">
+                {{ management_activities_form.duration(class="form-control") }}
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <!-- Price -->
+        <div class="col-6">
+            {{ management_activities_form.price.label }}
+            <div class="input-group mb-2">
+                {{ management_activities_form.price(class="form-control") }}
+            </div>
+        </div>
+        <!-- Facility used -->
+        <div class="col-6">
+            {{ management_activities_form.facility_id.label }}
+            <div class="input-group mb-2">
+                {{ management_activities_form.facility_id(class="form-control") }}
+            </div>
+        </div>
+    </div>
+    <!-- Submit button -->
+    <button type="submit" class="btn btn-danger btn-block mt-3">Add activity</button>
+</form>

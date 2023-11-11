@@ -1,0 +1,23 @@
+{% extends  "base.html" %}
+{% block content %}
+<h4 class="mb-3 fst-italic bold">Please enter your email & password below</h4>
+<!-- Login form -->
+<form id="login-form" method="POST" action="/login">
+    {{ login_form.csrf_token }}
+
+    <!-- Email -->
+    {{ login_form.email.label }}
+    <div class="input-group mb-2">
+        {{ login_form.email(class="form-control", placeholder="Enter email:") }}
+    </div>
+
+    <!-- Password -->
+    {{ login_form.password.label }}
+    <div class="input-group mb-2">
+        {{ login_form.password(class="form-control", placeholder="Enter password:") }}
+    </div>
+
+    <!-- Submit button -->
+    <button type="submit" class="btn btn-danger btn-block mt-3">Sign in</button>
+</form>
+{% endblock %}

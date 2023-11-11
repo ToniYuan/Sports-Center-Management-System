@@ -1,0 +1,7 @@
+{% extends  "base.html" %}
+{% block content %}
+    <h4 class="fst-italic bold mb-3">Become a member below!</h4>
+    <h5>Monthly : £{{monthly_membership_price}}</h5>
+    <h5 class="mb-2">Annual : £{{annual_membership_price}}</h5>
+    {% include "/cards/membership_card.html" %}
+{% endblock %}

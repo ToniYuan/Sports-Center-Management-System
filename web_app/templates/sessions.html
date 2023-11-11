@@ -1,0 +1,798 @@
+{% extends  "base.html" %}
+{% block content %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+<style>
+
+    /* -------------------------------------------------------------------------------------------------------- */
+    /* Table */
+    table {
+        border-collapse: separate;
+        border-spacing: 10px 0px;
+    }
+
+    /* -------------------------------------------------------------------------------------------------------- */
+    /* Table Headers */
+    /* Set header's color */
+    thead {
+        background-color: #464646;
+        color: #F5F2D0;
+    }
+
+    /* Round the header */
+    table thead th {
+        border-radius: 5px 5px 0 0;
+        text-align: center;
+        border: 0;
+    }
+
+    /* -------------------------------------------------------------------------------------------------------- */
+    /* Table datas */
+    /* Make cursor becomes to pointer when it above td */
+    .main-table td {
+        cursor: pointer;
+        background-color: white;
+        color: black;
+        border-left: 1px solid rgb(214, 214, 214);
+        border-right: 1px solid rgba(214, 214, 214);
+        border-bottom: 1px solid rgba(214, 214, 214);
+    }
+
+
+    /* If there is session exists, active hover */
+    .main-table td:not(.empty-cell):hover {
+        background-color: #DEDEDE !important;
+        color: #dc3545 !important;
+    }
+
+    /* The end of every column */
+    .no-more-sessions {
+        color: black;
+        text-align: center;
+        font-weight: lighter;
+    }
+
+
+    /* -------------------------------------------------------------------------------------------------------- */
+    /* Styles only for attribute: "spaces left" */
+    /* For big calendar */
+    .relative-container {
+        position: relative;
+        height: 100%;
+        text-align: center;
+    }
+
+    .spaces_big {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        text-align: center;
+        line-height: 30px;
+        background-color: yellowgreen;
+        color: white;
+    }
+
+    /* For small calendar */
+    .cell-content-small {
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 100%;
+    }
+
+    .spaces_small {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        text-align: center;
+        line-height: 30px;
+    }
+
+    /* -------------------------------------------------------------------------------------------------------- */
+    /* Buttons */
+    button {
+        font-size: 15px;
+        font-weight: bold;
+    }
+
+    .next_week_btn {
+        width: 130px;
+        height: 40px;
+        background-color: #dc3545;
+    }
+
+    .previous_week_btn {
+        width: 160px;
+        height: 40px;
+        background-color: #dc3545;
+    }
+
+    /* Use js to decide hide cancel booking button or not */
+    .hide-cancel-btn {
+        display: none;
+    }
+
+
+    /* -------------------------------------------------------------------------------------------------------- */
+    /* Highlight for current day column */
+    .highlightTh {
+        background-color: #dc3545 !important;
+        color: rgb(246, 114, 128);
+    }
+
+    /* Highlight booked sessions */
+    .main-table td.highlightBookedTd {
+        background-color: #DEDEDE !important;
+        color: rgb(84, 186, 185) !important;
+    }
+
+
+    /* -------------------------------------------------------------------------------------------------------- */
+    /* Dealing with empty cells */
+    .empty-cell {
+        background-color: rgb(236, 236, 236) !important;
+        border: none !important;
+        pointer-events: none;
+    }
+
+</style>
+
+<!-- Big calendar -->
+<div class="large-table" style="background-color: rgb(236, 236, 236)">
+    <h4 class="fst-italic bold">Book a session by clicking events in the calendar below</h4>
+    <div style="display: flex; justify-content: space-between;">
+            <span>
+                <span style="font-weight: bold;">Current Time: </span>
+                <i class="current-time" style="font-weight: bold; color: #dc3545;"></i>
+            </span>
+        <span>
+                <span class="bi bi-caret-down-square-fill" style="color: rgb(84, 186, 185); font-weight: bold">: </span>
+                <span style="font-weight: bold; color: black">Your Booked Sessions Color</span>
+            </span>
+    </div>
+    <div class="mt-2">
+        <button type="button" class="col-sm-1 btn-sm btn btn-danger previous_week_btn" id="previousweek"
+                style="overflow: hidden"
+                disabled>
+            <i class="bi bi-arrow-left-square"></i>
+            PREVIOUS WEEK
+        </button>
+        <button type="button" class="col-sm-1 btn-sm btn btn-danger next_week_btn" style="float: right" id="nextweek">
+            NEXT WEEK
+            <i class="bi bi-arrow-right-square-fill"></i>
+        </button>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-bordered border-white main-table" style="margin-top: 20px" id="currentWeek">
+            <thead class="rounded-table-header">
+            <tr>
+                {% for day in day_headings %}
+                <th class="thc" style="color: white"> {{ day }}</th>
+                {% endfor %}
+            </tr>
+            </thead>
+            <tbody>
+            {% for i in range(7) %}
+            <tr>
+                {% for day in day_headings %}
+                <td class="relative-container">
+                    {% for activity in thisweek_activities_by_day[day] %}
+                    {% if loop.index0 == i %}
+                    <span class="key-info" data-activity-id="{{ activity.Activity.activity_id }}"
+                          data-date="{{ activity.Session.start_date }}">
+                                                <div class="activity_name" style="font-weight: bold">{{ activity.Activity.activity_name }}</div>
+                                                <div class="start_date" style="color: rgb(156, 167, 119)">{{ activity.Session.start_date }} ({{ activity.Activity.duration }} hrs)</div>
+                                                <div class="spaces_remaining spaces_big">{{ activity.Session.space_left }} spaces</div>
+                                            </span>
+                    <span class="extra-info" style="display:none;">
+                                                <span class="facility">{{ activity.Facility.facility_name }}</span>
+                                                <span class="duration">{{ activity.Activity.duration }}</span>
+                                                <span class="price">{{ activity.Activity.price }}</span>
+                                                <span class="activity_id">{{ activity.Activity.activity_id }}</span>
+                                                <span class="session_id">{{ activity.Session.session_id }}</span>
+                                            </span>
+                    {% endif %}
+                    {% endfor %}
+                    {% if i == thisweek_activities_by_day[day]|length %}
+                    <div class="no-more-sessions">No more sessions available on this day</div>
+                    {% endif %}
+                </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Small screen calendar -->
+<div class="small-table" style="background-color: rgb(236, 236, 236)">
+    <h4 class="fst-italic bold">Book a session by clicking events in the calendar below</h4>
+    <div style="display: flex; justify-content: space-between;">
+            <span>
+                <span style="font-weight: bold; color: black">Current Time: </span>
+                <i class="current-time" style="font-weight: bold; color: #dc3545"></i>
+            </span>
+        <span>
+                <span class="bi bi-caret-down-square-fill" style="color: rgb(84, 186, 185); font-weight: bold">: </span>
+                <span style="font-weight: bold; color: black">Your Booked Sessions Color</span>
+            </span>
+    </div>
+    <div class="mt-2">
+        <button type="button" class="col-sm-1 btn-sm btn btn-danger previous_week_btn" id="smallPreviousweek"
+                style="overflow: hidden"
+                disabled>
+            <i class="bi bi-arrow-left-square"></i>
+            PREVIOUS WEEK
+        </button>
+        <button type="button" class="col-sm-1 btn-sm btn btn-danger next_week_btn" style="float: right"
+                id="smallNextweek">NEXT WEEK
+            <i class="bi bi-arrow-right-square-fill"></i>
+        </button>
+    </div>
+    <table class="table table-bordered border-white main-table" style="margin-top: 20px" id="currentWeekSmall">
+        {% for day in day_headings %}
+        <thead class="rounded-table-header">
+        <tr>
+            <th class="thc" style="color: white">{{ day }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for activity in thisweek_activities_by_day[day] %}
+        <tr>
+            <td class="cell-content-small">
+                            <span class="key-info" data-activity-id="{{ activity.Activity.activity_id }}"
+                                  data-date="{{ activity.Session.start_date }}">
+                                <div class="activity_name" style="font-weight: bold">{{ activity.Activity.activity_name }}</div>
+                                <div class="start_date" style="color: rgb(156, 167, 119)">{{ activity.Session.start_date }} ({{ activity.Activity.duration }} hrs)</div>
+                                <span class="spaces_remaining spaces_small">{{ activity.Session.space_left }} spaces</span>
+                            </span>
+                <span class="extra-info" style="display:none;">
+                                <span class="facility">{{ activity.Facility.facility_name }}</span>
+                                <span class="duration">{{ activity.Activity.duration }}</span>
+                                <span class="price">{{ activity.Activity.price }}</span>
+                                <span class="activity_id">{{ activity.Activity.activity_id }}</span>
+                                <span class="session_id">{{ activity.Session.session_id }}</span>
+                            </span>
+            </td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td class="no-more-sessions">--- No more sessions available on this day ---</td>
+        </tr>
+        </tbody>
+        {% endfor %}
+    </table>
+</div>
+
+
+<!-- Modal Sector here:  -->
+<div class="modal" tabindex="-1" role="dialog" id="myModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Session Details: </h5>
+            </div>
+            <div class="modal-body">
+                <p id="cellContent">Session: </p>
+                <div class="modalTable">
+                    <!-- Session's detail will be inserted here using js -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger hide-cancel-btn" id="cancel-btn">Cancel this session
+                </button>
+                <button type="button" class="btn btn-danger booking" id="book-btn">Book</button>
+                <button type="button" class="btn btn-secondary close-modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        // Store all the data here for button "previous week"
+        var originalTable = $("#currentWeek").html();
+        var originalTableSmall = $("#currentWeekSmall").html();
+
+
+        // Use ajax to get user's booked sessions from backend
+        let userBookedActivities = [];
+
+        function updateTime() {
+            const now = new Date();
+            const dateString = now.toLocaleDateString();
+            const timeString = now.toLocaleTimeString();
+            const elements = document.getElementsByClassName('current-time');
+            for (let i = 0; i < elements.length; i++) {
+                elements[i].textContent = dateString + ' ' + timeString;
+            }
+        }
+
+        // Call updateTime once at the start to initialize the time display
+        updateTime();
+        updateSpacesLeftColor();
+        updateSpacesLeftBackGround();
+
+        // Then set an interval to update the time every second
+        setInterval(updateTime, 1000);
+
+
+        $.ajax({
+            url: '/get_user_booked_activities',
+            method: 'POST',
+            contentType: 'application/json',
+            success: function (response) {
+                userBookedActivities = response.user_booked_activities;
+                highlightBookedSessions(userBookedActivities);
+            },
+            error: function (xhr, status, error) {
+                alert("Failed to get user booked activities: " + xhr.responseText);
+            }
+        });
+
+
+        // Check the horizontal resloution then make a choice between big and small table (Responsive)
+        function checkWidth() {
+            var windowWidth = $(window).width();
+            if (windowWidth <= 992) {
+                $('.large-table').hide();
+                $('.small-table').show();
+            } else {
+                $('.large-table').show();
+                $('.small-table').hide();
+            }
+        }
+
+
+        $(document).ready(checkWidth);
+        $(window).resize(checkWidth);
+
+
+        // For big table, Eye-catching color to remind users that there is not much space available.
+        function updateSpacesLeftBackGround() {
+            $('.spaces_big').each(function () {
+                var spacesLeft = parseInt($(this).text().split(' ')[0]);
+                if (spacesLeft <= 5) {
+                    $(this).css('background-color', 'rgb(255, 45, 45)');
+                    $(this).css('color', 'white');
+                } else {
+                    $(this).css('background-color', 'yellowgreen');  // Reset to default color if spacesLeft is more than 5
+                }
+            })
+        };
+
+
+        // For small table
+        function updateSpacesLeftColor() {
+            $('.spaces_small').each(function () {
+                var spacesLeft = parseInt($(this).text().split(' ')[0]);
+                if (spacesLeft <= 5) {
+                    $(this).css('color', 'rgb(255, 45, 45)');
+                } else {
+                    $(this).css('color', 'yellowgreen');  // Reset to default color if spacesLeft is more than 5
+                }
+            })
+        };
+
+
+        //Function to implement the feature of switch page
+        function updateTable(tableContent, applyHighlight) {
+            $("#currentWeek").html(tableContent);
+
+            $("#currentWeek td").each(function () {
+                if ($(this).find('.key-info').length === 0) {
+                    $(this).addClass("empty-cell");
+                }
+            });
+            if (applyHighlight) {
+                highlightCurrentDay();
+            }
+            highlightBookedSessions(userBookedActivities);
+            updateSpacesLeftBackGround();
+        }
+
+
+        // For small table
+        function updateSmallTable(tableContent, applyHighlight) {
+            $("#currentWeekSmall").html(tableContent);
+
+            $("#currentWeekSmall td").each(function () {
+                if ($(this).find('.key-info').length === 0) {
+                    $(this).addClass("empty-cell");
+                }
+            });
+            if (applyHighlight) {
+                highlightCurrentDaySmall();
+            }
+            highlightBookedSessions(userBookedActivities);
+            updateSpacesLeftColor()
+        }
+
+
+        // --------------------------------------------------------------------------------------------------------
+        // Next Week's sessions page here
+        $("#nextweek").click(function () {
+            console.log("Clicked");
+            var newTableContent = `
+                <thead class="rounded-table-header">
+                <tr>
+                    {% for day in day_headings %}
+                        <th class="thc" style="color: white">{{ day }}</th>
+                    {% endfor %}
+                </tr>
+                </thead>
+                <tbody>
+                    {% for i in range(7) %}
+                        <tr>
+                            {% for day in day_headings %}
+                                <td class="relative-container">
+                                    {% for activity in next_week_activities_by_day[day] %}
+                                        {% if loop.index0 == i %}
+                                            <span class="key-info" data-activity-id="{{ activity.Activity.activity_id }}"
+                                                  data-date="{{ activity.Session.start_date }}">
+                                                <div class="activity_name" style="font-weight: bold">{{ activity.Activity.activity_name }}</div>
+                                                <div class="start_date" style="color: rgb(156, 167, 119)">{{ activity.Session.start_date }} ({{ activity.Activity.duration }} hrs)</div>
+                                                <div class="spaces_remaining spaces_big">{{ activity.Session.space_left }} spaces</div>
+                                            </span>
+                                            <span class="extra-info" style="display:none;">
+                                                <span class="facility">{{ activity.Facility.facility_name }}</span>
+                                                <span class="duration">{{ activity.Activity.duration }}</span>
+                                                <span class="price">{{ activity.Activity.price }}</span>
+                                                <span class="activity_id">{{ activity.Activity.activity_id }}</span>
+                                                <span class="session_id">{{ activity.Session.session_id }}</span>
+                                            </span>
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% if i == next_week_activities_by_day[day]|length %}
+                                        <div class="no-more-sessions">No more sessions available on this day</div>
+                                    {% endif %}
+                                </td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>`;
+
+            updateTable(newTableContent, false);
+            // Set button's status
+            $("#nextweek").prop("disabled", true);
+            $("#previousweek").prop("disabled", false);
+            // Update highlight cell all the time
+            // console.log("n clicked? ", userBookedActivities);
+        });
+
+
+        $("#previousweek").click(function () {
+            updateTable(originalTable, true);
+
+            $("#previousweek").prop("disabled", true);
+            $("#nextweek").prop("disabled", false);
+            // console.log("p clicked? ", userBookedActivities);
+        });
+
+
+        // --------------------------------------------------------------------------------------------------------
+        // For mobile layout:
+        $("#smallNextweek").click(function () {
+            console.log("SmallClicked");
+
+            var newTableContent = `
+                {% for day in day_headings %}
+                <thead class="rounded-table-header">
+                <tr>
+                    <th class="thc" style="color: white">{{ day }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for activity in next_week_activities_by_day[day] %}
+                    <tr>
+                        <td class="cell-content-small">
+                            <span class="key-info" data-activity-id="{{ activity.Activity.activity_id }}"
+                                  data-date="{{ activity.Session.start_date }}">
+                                <div class="activity_name" style="font-weight: bold">{{ activity.Activity.activity_name }}</div>
+                                <div class="start_date" style="color: darkcyan">{{ activity.Session.start_date }} ({{ activity.Activity.duration }} hrs)</div>
+                                <span class="spaces_remaining spaces_small">{{ activity.Session.space_left }} spaces</div>
+                            </span>
+                            <span class="extra-info" style="display:none;">
+                                <span class="facility">{{ activity.Facility.facility_name }}</span>
+                                <span class="duration">{{ activity.Activity.duration }}</span>
+                                <span class="price">{{ activity.Activity.price }}</span>
+                                <span class="activity_id">{{ activity.Activity.activity_id }}</span>
+                                <span class="session_id">{{ activity.Session.session_id }}</span>
+                            </span>
+                        </td>
+                    </tr>
+                {% endfor %}
+                <tr>
+                    <td class="no-more-sessions">--- No more sessions available on this day ---</td>
+                </tr>
+                </tbody>
+            {% endfor %}`;
+
+            updateSmallTable(newTableContent, false);
+            // Set button's status
+            $("#smallNextweek").prop("disabled", true);
+            $("#smallPreviousweek").prop("disabled", false);
+            // Update highlight cell all the time
+            // console.log("n clicked? ", userBookedActivities);
+        });
+
+
+        $("#smallPreviousweek").click(function () {
+            updateSmallTable(originalTableSmall, true);
+
+            $("#smallPreviousweek").prop("disabled", true);
+            $("#smallNextweek").prop("disabled", false);
+            // console.log("p clicked? ", userBookedActivities);
+        });
+
+
+        // --------------------------------------------------------------------------------------------------------
+        // Show modal for the sessions in data cells.
+        $('#currentWeek, #currentWeekSmall').on('click', 'tbody tr td', function () {
+            const keyInfo = $(this).find('.key-info');
+            const activity_name = keyInfo.find('.activity_name').text();
+            const start_date = keyInfo.find('.start_date').text();
+            const space = keyInfo.find('.spaces_remaining').text();
+
+            // We need more info for users to look up.
+            const extraInfo = $(this).find('.extra-info');
+            const facility = extraInfo.find('.facility').text();
+            const duration = extraInfo.find('.duration').text();
+            const price = extraInfo.find('.price').text()
+            const activity_id = parseInt(extraInfo.find('.activity_id').text());
+            const session_id = parseInt(extraInfo.find('.session_id').text());
+
+
+            // Inserting details to table
+            $('#cellContent').html(`
+                    <table class="modalTable">
+                        <tr>
+                            <td>Session Name: </td>
+                            <td>${activity_name || ''}</td>
+                        </tr>
+                        <tr>
+                            <td>Date and Time: </td>
+                            <td>${start_date || ''}</td>
+                        </tr>
+                        <tr>
+                            <td>Duration: </td>
+                            <td>${duration || ''}</td>
+                        </tr>
+                        <tr>
+                            <td>Facility: </td>
+                            <td>${facility || ''}</td>
+                        </tr>
+                        <tr>
+                            <td>Price: </td>
+                            <td>${price || ''} pounds</td>
+                        </tr>
+                        <tr>
+                            <td>Spaces: </td>
+                            <td>${space || ''}</td>
+                        </tr>
+
+                    </table>
+                `);
+
+
+            // Show modal
+            $('#myModal').modal('show');
+
+            // Close modal
+            $('.modal-footer .close-modal').click(function () {
+                $('#myModal').modal('hide');
+            });
+
+
+            if (userBookedActivities.includes(session_id)) {
+                document.getElementById('cancel-btn').classList.remove('hide-cancel-btn');
+                document.getElementById('book-btn').classList.add('hide-cancel-btn');
+
+            } else {
+                document.getElementById('cancel-btn').classList.add('hide-cancel-btn');
+                document.getElementById('book-btn').classList.remove('hide-cancel-btn');
+            }
+
+
+            $("#cancel-btn").off("click").click(function () {
+                $.ajax({
+                    url: '/cancel_cbook',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ // use JSON.stringify() to convert data to JSON string
+                        session_id: session_id
+                    }),
+                    success: function (response) {
+                        if (response.success) {
+                            // Handle success
+                            alert("Booking cancelled successfully!");
+                            document.getElementById('cancel-btn').classList.add('hide-btn');
+                            document.getElementById('book-btn').classList.remove('hide-btn');
+                            location.reload();
+
+                            $('#myModal').modal('hide');
+                        } else {
+                            // Handle error
+                            alert("Failed to cancel booking: " + response.error);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        alert("Failed to cancel booking: " + xhr.responseText);
+                    }
+                });
+            });
+
+
+            // Booking feature in calendar
+            $("#book-btn").off("click").click(function () {
+
+                // Use moment to let time data fit all browser and devices
+                // Debug: Print original start_date
+                console.log("Original start_date: ", start_date);
+
+                // Reformat date and time to fetch the database
+                var momentObj = moment(start_date, 'YYYY-MM-DD HH:mm'); // Replace 'YYYY-MM-DD HH:mm' with your actual format if it's not the same
+
+                // Debug: Print moment.js object
+                console.log("Parsed by moment.js: ", momentObj);
+
+                var date_formatted = momentObj.format('YYYY-MM-DD');
+                var time_formatted = momentObj.format('HH:mm');
+
+                // Debug: Print formatted date and time
+                console.log("date_formatted: ", date_formatted);
+                console.log("time_formatted: ", time_formatted);
+
+                // Get data from backend
+                $.ajax({
+                    url: '/cbook',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ // use JSON.stringify() turn data to JSON str
+                        activity_id: activity_id,
+                        date: date_formatted,
+                        session_id: session_id,
+                        time: time_formatted
+                    }),
+                    success: function (response) {
+                        if (response.success) {
+                            alert(response.success);
+
+                            $('#myModal').modal('hide');
+
+                            userBookedActivities = response.user_booked_activities;
+
+                            location.reload();
+
+                        } else {
+                            alert(response.error);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        var response = JSON.parse(xhr.responseText);
+                        alert("Booking failed: " + response.error);
+                        $('#myModal').modal('hide');
+                    }
+                });
+            });
+        });
+
+
+        // --------------------------------------------------------------------------------------------------------
+        // Little useful feature
+        function highlightCurrentDay() {
+            const currentDate = new Date();
+            const currentDay = currentDate.getDay();
+
+            // Calculate the correct column index for table layout (Monday to Sunday)
+            let columnIndex;
+            if (currentDay === 0) {
+                columnIndex = 6;
+            } else {
+                columnIndex = currentDay - 1;
+            }
+
+            // Remove highlight and reset text
+            $('#currentWeek thead th').removeClass('highlightTh').each(function () {
+                const dayName = $(this).attr('data-day-name');
+                $(this).text(dayName);
+            });
+
+            $('#currentWeek tbody tr td').removeClass('highlightTr');
+
+            // Add highlight and set text to "TODAY"
+            $('#currentWeek thead th').eq(columnIndex).addClass('highlightTh').text('TODAY');
+            $('#currentWeek tbody tr').each(function () {
+                $(this).find('td').eq(columnIndex).addClass('highlightTr');
+            });
+        }
+
+
+        // For small table
+        let currentDayIndex = 0; // Define this variable outside of the function
+
+        function highlightCurrentDaySmall() {
+            const currentDate = new Date();
+            const currentDay = currentDate.getDay();
+
+            // Calculate the correct row index for small screen table layout (Monday to Sunday)
+            if (currentDay === 0) {
+                currentDayIndex = 6;
+            } else {
+                currentDayIndex = currentDay - 1;
+            }
+            console.log("Row index: " + currentDayIndex);
+
+            // Remove highlight and reset text
+            $('#currentWeekSmall thead th').removeClass('highlightTh').each(function (index) {
+                const dayName = $(this).attr('data-day-name');
+                $(this).text(dayName);
+                if (index === currentDayIndex) {
+                    $(this).addClass('highlightTh').text('TODAY');
+                }
+            });
+
+            $('#currentWeekSmall tbody').each(function (index) {
+                $(this).find('tr').removeClass('highlightTr');
+                if (index === currentDayIndex) {
+                    $(this).find('tr:has(.cell-content-small) td').addClass('highlightTr');
+                }
+            });
+        }
+
+
+        highlightCurrentDay();
+        highlightCurrentDaySmall();
+
+        $("#currentWeek td, #currentWeekSmall td").each(function () {
+            if ($(this).find('.key-info').length === 0) {
+                $(this).addClass("empty-cell");
+            }
+        });
+
+        // console.log(booked_sessions);
+        // console.log("?????: ", {{ booked_sessions[1] }});
+        //---------------------------------------------------------------------------------------------------------
+        // Showing booked sessions on calendar
+
+        function highlightBookedSessions(userBookedActivities) {
+            let activityId;
+            let date;
+            let cell_selector;
+
+            // Highlight for this week
+            {%for day in day_headings %}
+                {%for activity in thisweek_activities_by_day[day] %}
+                    if (userBookedActivities.includes({{ activity.Session.session_id }})) {
+                        activityId = {{ activity.Activity.activity_id }};
+                        date = "{{ activity.Session.start_date }}";
+                        cell_selector = `#currentWeek tbody tr td:contains(${date}):contains(${activityId}),
+                                                     #currentWeekSmall tbody tr td:contains(${date}):contains(${activityId})`;
+                        $(cell_selector).addClass('highlightBookedTd');
+                    }
+                {% endfor %}
+            {% endfor %}
+
+
+            // Highlightfor next week
+            {% for day in day_headings %}
+            {% for activity in next_week_activities_by_day[day] %}
+            if (userBookedActivities.includes({{ activity.Session.session_id }})) {
+                activityId = {{ activity.Activity.activity_id }};
+                date = "{{ activity.Session.start_date }}";
+                cell_selector = `#currentWeek tbody tr td:contains(${date}):contains(${activityId}),
+                                             #currentWeekSmall tbody tr td:contains(${date}):contains(${activityId})`;
+                $(cell_selector).addClass('highlightBookedTd');
+            }
+            {% endfor %}
+            {% endfor %}
+        }
+    });
+</script>
+
+{% endblock %}

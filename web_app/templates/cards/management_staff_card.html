@@ -1,0 +1,62 @@
+<!-- Current employee list -->
+<h5>Current employees</h5>
+<table class=table>
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Manager ID</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for employee in employees %}
+    <tr>
+        <td>{{ employee.name_first }} {{ employee.name_last }}</td>
+        <td>{{ employee.email }}</td>
+        <td>{{ employee.manager_id }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+
+<!-- Add employee form -->
+<h5>Add employee</h5>
+<form id="management-staff-form" method="POST" action="/amend-staff">
+    {{ management_staff_form.csrf_token }}
+    <div class="row">
+        <!-- First name -->
+        <div class="col-6">
+            {{ management_staff_form.name_first.label }}
+            <div class="input-group mb-2">
+                {{ management_staff_form.name_first(class="form-control", placeholder="Enter first name:") }}
+            </div>
+        </div>
+        <div class="col-6">
+            <!-- Last name -->
+            {{ management_staff_form.name_last.label }}
+            <div class="input-group mb-2">
+                {{ management_staff_form.name_last(class="form-control", placeholder="Enter last name:") }}
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <!-- Email -->
+        <div class="col-6">
+            {{ management_staff_form.email.label }}
+            <div class="input-group mb-2">
+                {{ management_staff_form.email(class="form-control", placeholder="Enter email:") }}
+            </div>
+        </div>
+        <div class="col-6">
+            <!-- Password -->
+            {{ management_staff_form.password.label }}
+            <div class="input-group mb-2">
+                {{ management_staff_form.password(class="form-control", placeholder="Enter password:") }}
+            </div>
+        </div>
+    </div>
+
+    <!-- Submit button -->
+    <button type="submit" class="btn btn-danger btn-block mt-3">Add employee</button>
+</form>

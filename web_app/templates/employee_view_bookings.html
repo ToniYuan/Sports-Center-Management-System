@@ -1,0 +1,53 @@
+{% extends  "base.html" %}
+{% block content %}
+
+<h4 class="fst-italic bold mb-3">Amending bookings for: {{target_user.name_first}} {{target_user.name_last}}</h4>
+
+<h5 class="mt-2">Create booking</h5>
+<!-- Booking form -->
+<form id="booking-form" method="POST">
+    {{ booking_form.csrf_token }}
+    <div class="row">
+        <div class="col-9">
+            <!-- Session -->
+            <div class="input-group mb-2">
+                {{ booking_form.session(class="form-control") }}
+            </div>
+        </div>
+        <div class="col-3">
+            <!-- Submit button -->
+            <button type="submit" class="btn btn-danger">Book</button>
+        </div>
+    </div>
+</form>
+
+
+<h5 class="mt-2">Existing bookings</h5>
+<table class="table table-hover table-bordered table-striped mt-2">
+    <tr>
+        <th>Session booked</th>
+        <th>Date/time</th>
+        <th>Actions</th>
+    </tr>
+
+    {% for booking in bookings %}
+    <tr>
+        <td>
+            {{ booking.activity_name }}
+        </td>
+        <td>
+            {{ booking.start_date }}
+        </td>
+        <td>
+            <form method="POST">
+                <button class="btn btn-danger" type="submit" name="cancel-booking-{{ booking.booking_id }}">Cancel
+                </button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+<a class="btn btn-danger mt-2" href="/employee">Back</a>
+
+{% endblock %}

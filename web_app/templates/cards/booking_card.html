@@ -1,0 +1,17 @@
+<!-- Booking form -->
+<form id="booking-form" method="POST" action="/book">
+    {{ booking_form.csrf_token }}
+    <!-- Session -->
+    <h4 class="fst-italic bold"> {{ booking_form.session.label }} </h4>
+    <div class="row">
+        <div class="col-6">
+            <div class="input-group mb-2">
+                {{ booking_form.session(class="form-control") }}
+            </div>
+        </div>
+        <div class="col-6">
+            <!-- Submit button -->
+            <button type="submit" class="btn btn-danger">Book</button>
+        </div>
+    </div>
+</form>
